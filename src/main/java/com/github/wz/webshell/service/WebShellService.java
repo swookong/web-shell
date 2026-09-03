@@ -1,7 +1,3 @@
-/*
- * Copyright © 2020-present zmzhou-star. All Rights Reserved.
- */
-
 package com.github.wz.webshell.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,30 +24,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Web Shell业务逻辑实现
- *
- * @author zmzhou
- * @version 1.0
- * @title WebShellService
- * @date 2021/2/23 21:58
- */
 @Slf4j
 @Service
 public class WebShellService {
-    /**
-     * 存放ssh连接信息的map
-     */
-    private static final Map<String, Object> SSH_MAP = new ConcurrentHashMap<>();
+        private static final Map<String, Object> SSH_MAP = new ConcurrentHashMap<>();
 
-    /**
-     * 初始化连接
-     *
-     * @param session WebSocketSession
-     * @author zmzhou
-     * @date 2021/2/23 21:22
-     */
-    public void initConnection(WebSocketSession session) {
+        public void initConnection(WebSocketSession session) {
         JSch jSch = new JSch();
         ShellConnectInfo shellConnectInfo = new ShellConnectInfo();
         shellConnectInfo.setJsch(jSch);
@@ -61,13 +39,7 @@ public class WebShellService {
         SSH_MAP.put(uuid, shellConnectInfo);
     }
 
-    /**
-     * 处理客户端发送的数据
-     *
-     * @author zmzhou
-     * @date 2021/2/23 21:21
-     */
-    public void recvHandle(String buffer, WebSocketSession session) {
+        public void recvHandle(String buffer, WebSocketSession session) {
         ObjectMapper objectMapper = new ObjectMapper();
         WebShellData shellData;
         try {
@@ -101,14 +73,7 @@ public class WebShellService {
         }
     }
 
-    /**
-     * 关闭连接
-     *
-     * @param session WebSocketSession
-     * @author zmzhou
-     * @date 2021/2/23 21:16
-     */
-    public void close(WebSocketSession session) {
+        public void close(WebSocketSession session) {
         String userId = WebShellUtils.getUuid(session);
         ShellConnectInfo shellConnectInfo = (ShellConnectInfo) SSH_MAP.get(userId);
         if (shellConnectInfo != null) {
@@ -121,16 +86,7 @@ public class WebShellService {
         }
     }
 
-    /**
-     * 使用jsch连接终端
-     *
-     * @param shellConnectInfo ShellConnectInfo
-     * @param sshData          WebShellData
-     * @param webSocketSession WebSocketSession
-     * @author zmzhou
-     * @date 2021/2/23 21:15
-     */
-    private void connectToSsh(ShellConnectInfo shellConnectInfo, WebShellData sshData, WebSocketSession webSocketSession)
+        private void connectToSsh(ShellConnectInfo shellConnectInfo, WebShellData sshData, WebSocketSession webSocketSession)
             throws JSchException {
         Properties config = new Properties();
         // SSH 连接远程主机时，会检查主机的公钥。如果是第一次该主机，会显示该主机的公钥摘要，提示用户是否信任该主机
@@ -172,14 +128,7 @@ public class WebShellService {
         }
     }
 
-    /**
-     * 数据写回前端
-     *
-     * @param session WebSocketSession
-     * @author zmzhou
-     * @date 2021/2/23 21:18
-     */
-    public void sendMessage(WebSocketSession session, byte[] buffer) {
+        public void sendMessage(WebSocketSession session, byte[] buffer) {
         try {
             session.sendMessage(new TextMessage(buffer));
         } catch (IOException e) {
@@ -187,14 +136,7 @@ public class WebShellService {
         }
     }
 
-    /**
-     * 将消息转发到终端
-     *
-     * @param channel Channel
-     * @author zmzhou
-     * @date 2021/2/23 21:13
-     */
-    private void sendToTerminal(Channel channel, String command) {
+        private void sendToTerminal(Channel channel, String command) {
         if (channel != null) {
             try {
                 OutputStream outputStream = channel.getOutputStream();

@@ -1,7 +1,7 @@
 # 开发环境配置
 server:
-  # 服务器的HTTP端口，默认为8080
-  port: 8080
+  # 服务器的HTTP端口，默认为9999
+  port: 9999
   servlet:
     # 应用的访问路径
     context-path: /
@@ -58,4 +58,4 @@ logging:
     com.github.zmzhoustar: INFO
     org.springframework: INFO
 logstash:
-  address: 192.168.163.132:4567
+  address: 127.0.0.1:4567

@@ -1,7 +1,3 @@
-/*
- * Copyright © 2020-present zmzhou-star. All Rights Reserved.
- */
-
 package com.github.wz.webshell.utils;
 
 import com.github.wz.webshell.Constants;
@@ -15,82 +11,37 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * SFTP服务器工具类
- * SftpUtils
- *
- * @author zmzhou
- * @version 1.0
- * @date 2021/2/25 11:46
- */
 @Slf4j
 public final class SftpUtils {
 
     private ChannelSftp channelSftp;
     private Session session;
 
-    /**
-     * 用户名
-     */
-    private final String username;
+        private final String username;
 
-    /**
-     * 密码
-     */
-    private String password;
+        private String password;
 
-    /**
-     * 秘钥
-     */
-    private String privateKey;
+        private String privateKey;
 
-    /**
-     * FTP服务器Ip
-     */
-    private final String host;
+        private final String host;
 
-    /**
-     * FTP服务器端口号
-     */
-    private final int port;
+        private final int port;
 
-    /**
-     * 构造器 基于密码认证
-     *
-     * @param sshData 用户名，密码，主机，端口
-     * @author zmzhou
-     * @date 2021/3/3 15:16
-     */
-    public SftpUtils(WebShellData sshData) {
+        public SftpUtils(WebShellData sshData) {
         this.username = sshData.getUsername();
         this.password = SecretUtils.decrypt(sshData.getPassword(), SecretUtils.AES_KEY);
         this.host = sshData.getHost();
         this.port = sshData.getPort();
     }
 
-    /**
-     * 构造器：基于秘钥认证sftp对象
-     *
-     * @param username   用户名
-     * @param privateKey 秘钥
-     * @param host       服务器ip
-     * @param port       服务器端口号
-     */
-    public SftpUtils(String username, String privateKey, int port, String host) {
+        public SftpUtils(String username, String privateKey, int port, String host) {
         this.username = username;
         this.privateKey = privateKey;
         this.host = host;
         this.port = port;
     }
 
-    /**
-     * 连接SFTP服务器
-     *
-     * @return 连接成功
-     * @author zmzhou
-     * @date 2021/3/1 14:01
-     */
-    public boolean login() {
+        public boolean login() {
         JSch jsch = new JSch();
         try {
             if (StringUtils.isNotBlank(privateKey)) {
@@ -120,10 +71,7 @@ public final class SftpUtils {
         return true;
     }
 
-    /**
-     * 关闭SFTP连接
-     */
-    public void logout() {
+        public void logout() {
         if (channelSftp != null && channelSftp.isConnected()) {
             channelSftp.disconnect();
             log.debug("sftp closed");
@@ -134,17 +82,7 @@ public final class SftpUtils {
         }
     }
 
-    /**
-     * 将输入流上传到SFTP服务器，作为文件
-     *
-     * @param directory    上传到SFTP服务器的路径
-     * @param sftpFileName 上传到SFTP服务器后的文件名
-     * @param input        输入流
-     * @throws SftpException SftpException
-     * @author zmzhou
-     * @date 2021/3/2 23:36
-     */
-    public void upload(String directory, String sftpFileName, InputStream input) throws SftpException {
+        public void upload(String directory, String sftpFileName, InputStream input) throws SftpException {
         long start = System.currentTimeMillis();
         // 创建不存在的文件夹，并切换到文件夹
         createDir(directory);
@@ -153,15 +91,7 @@ public final class SftpUtils {
         log.info("文件上传成功！！ 耗时：{}ms", (System.currentTimeMillis() - start));
     }
 
-    /**
-     * 下载文件
-     *
-     * @param path SFTP服务器的文件路径
-     * @return 输入流
-     * @author zmzhou
-     * @date 2021/3/2 21:20
-     */
-    public InputStream download(String path) {
+        public InputStream download(String path) {
         // 文件所在目录
         String directory = path.substring(0, path.lastIndexOf(Constants.SEPARATOR));
         // 文件名
@@ -169,16 +99,7 @@ public final class SftpUtils {
         return download(directory, fileName);
     }
 
-    /**
-     * 下载文件
-     *
-     * @param directory SFTP服务器的文件路径
-     * @param fileName  SFTP服务器上的文件名
-     * @return 输入流
-     * @author zmzhou
-     * @date 2021/3/2 21:20
-     */
-    public InputStream download(String directory, String fileName) {
+        public InputStream download(String directory, String fileName) {
         try {
             if (StringUtils.isNotBlank(directory)) {
                 channelSftp.cd(directory);
@@ -191,16 +112,7 @@ public final class SftpUtils {
         return null;
     }
 
-    /**
-     * 删除文件或者空文件夹
-     *
-     * @param directory SFTP服务器的文件路径
-     * @param fileName  删除的文件名称
-     * @return 删除结果
-     * @author zmzhou
-     * @date 2021/3/4 21:47
-     */
-    private boolean delete(String directory, String fileName) {
+        private boolean delete(String directory, String fileName) {
         String file = directory + Constants.SEPARATOR + fileName;
         try {
             ChannelSftp.LsEntry lsEntry = (ChannelSftp.LsEntry) listFiles(file).get(0);
@@ -225,15 +137,7 @@ public final class SftpUtils {
         return true;
     }
 
-    /**
-     * 删除文件或者文件夹
-     *
-     * @param path SFTP服务器的文件或者文件夹路径
-     * @return 删除结果
-     * @author zmzhou
-     * @date 2021/3/4 21:47
-     */
-    public boolean delete(String path) {
+        public boolean delete(String path) {
         AtomicBoolean delFlag = new AtomicBoolean(true);
         Vector<?> vector = listFiles(path);
         // 是文件或者空文件夹
@@ -261,15 +165,7 @@ public final class SftpUtils {
         return delFlag.get();
     }
 
-    /**
-     * 获取文件夹下的文件列表
-     *
-     * @param directory 路径
-     * @return 文件列表
-     * @author zmzhou
-     * @date 2021/3/1 9:56
-     */
-    public Vector<?> listFiles(String directory) {
+        public Vector<?> listFiles(String directory) {
         try {
             if (isDirExists(directory) || isFileExists(directory)) {
                 Vector<?> vector = channelSftp.ls(directory);
@@ -290,15 +186,7 @@ public final class SftpUtils {
         return new Vector<>();
     }
 
-    /**
-     * 判断目录是否存在，不存在则创建，并进入目录
-     *
-     * @param createPath 路径
-     * @return 创建成功并进入目录
-     * @author zmzhou
-     * @date 2021/3/3 10:53
-     */
-    public boolean createDir(String createPath) {
+        public boolean createDir(String createPath) {
         try {
             if (isDirExists(createPath)) {
                 this.channelSftp.cd(createPath);
@@ -330,15 +218,7 @@ public final class SftpUtils {
         return true;
     }
 
-    /**
-     * 判断目录是否存在
-     *
-     * @param directory 路径
-     * @return 目录是否存在
-     * @author zmzhou
-     * @date 2021/3/3 11:04
-     */
-    public boolean isDirExists(String directory) {
+        public boolean isDirExists(String directory) {
         try {
             SftpATTRS attrs = this.channelSftp.lstat(directory);
             return null != attrs && attrs.isDir();
@@ -348,15 +228,7 @@ public final class SftpUtils {
         return false;
     }
 
-    /**
-     * 判断文件是否存在
-     *
-     * @param filePath 文件路径
-     * @return 文件是否存在
-     * @author zmzhou
-     * @date 2021/3/3 11:04
-     */
-    public boolean isFileExists(String filePath) {
+        public boolean isFileExists(String filePath) {
         try {
             SftpATTRS attrs = this.channelSftp.lstat(filePath);
             // 存在并且不是文件夹

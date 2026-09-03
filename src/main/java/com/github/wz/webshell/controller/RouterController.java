@@ -1,7 +1,3 @@
-/*
- * Copyright 漏 2020-present zmzhou-star. All Rights Reserved.
- */
-
 package com.github.wz.webshell.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,27 +10,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-/**
- * 路由控制类
- */
 @Slf4j
 @Controller
 public class RouterController {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    /**
-     * index
-     */
-    @GetMapping({"/", "/index"})
+        @GetMapping({"/", "/index"})
     public String index() {
         return "index";
     }
 
-    /**
-     * sftp
-     */
-    @GetMapping("/sftp")
+        @GetMapping("/sftp")
     public String sftp(String params, Model model) {
         String sessionId = WebShellUtils.getSessionId();
         log.info("[SFTP] sessionId={}, params length={}", sessionId, params != null ? params.length() : 0);

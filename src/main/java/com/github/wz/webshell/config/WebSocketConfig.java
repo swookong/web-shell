@@ -1,7 +1,3 @@
-/*
- * Copyright © 2020-present zmzhou-star. All Rights Reserved.
- */
-
 package com.github.wz.webshell.config;
 
 import com.github.wz.webshell.handler.WebShellWebSocketHandler;
@@ -13,14 +9,6 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 import javax.annotation.Resource;
 
-/**
- * websocket配置
- *
- * @author zmzhou
- * @version 1.0
- * @title WebSocketConfig
- * @date 2021/1/31 13:13
- */
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {

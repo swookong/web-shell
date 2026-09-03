@@ -1,7 +1,3 @@
-/*
- * Copyright © 2020-present zmzhou-star. All Rights Reserved.
- */
-
 package com.github.wz.webshell.utils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -11,61 +7,22 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
-/**
- * 线程池工具类
- *
- * @author zmzhou
- * @version 1.0
- * @title ThreadPoolUtils
- * @date 2020/9/13 18:08
- */
 @Slf4j
 public final class ThreadPoolUtils {
-    /**
-     * ThreadPoolTaskExecutor
-     */
-    private static ThreadPoolTaskExecutor threadPool = null;
+        private static ThreadPoolTaskExecutor threadPool = null;
 
-    /**
-     * 工具类私有化构造器
-     *
-     * @author zmzhou
-     * @date 2020/9/13 18:20
-     */
-    private ThreadPoolUtils() {
+        private ThreadPoolUtils() {
     }
 
-    /**
-     * 无返回值直接执行
-     *
-     * @param runnable Runnable
-     * @author zmzhou
-     * @date 2020/9/13 18:09
-     */
-    public static void execute(Runnable runnable) {
+        public static void execute(Runnable runnable) {
         get().execute(runnable);
     }
 
-    /**
-     * 有返回值直接执行
-     *
-     * @param callable Callable
-     * @return Future<T> future.get()获取返回值
-     * @author zmzhou
-     * @date 2020/9/13 18:10
-     */
-    public static <T> Future<T> submit(Callable<T> callable) {
+        public static <T> Future<T> submit(Callable<T> callable) {
         return get().submit(callable);
     }
 
-    /**
-     * 获取线程池对象
-     *
-     * @return ThreadPoolTaskExecutor
-     * @author zmzhou
-     * @date 2020/9/13 18:21
-     */
-    private static ThreadPoolTaskExecutor get() {
+        private static ThreadPoolTaskExecutor get() {
         if (threadPool != null) {
             log.debug("线程池已创建");
             return threadPool;
@@ -100,13 +57,7 @@ public final class ThreadPoolUtils {
         return threadPool;
     }
 
-    /**
-     * 停止线程池任务
-     *
-     * @author zmzhou
-     * @since 2021/5/7 17:12
-     */
-    public static void shutdown() {
+        public static void shutdown() {
         if (threadPool != null) {
             threadPool.shutdown();
             log.info("关闭线程池");

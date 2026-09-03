@@ -1,47 +1,18 @@
-/*
- * Copyright © 2020-present zmzhou-star. All Rights Reserved.
- */
-
 package com.github.wz.webshell.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
-/**
- * ehcache缓存操作工具类
- *
- * @author zmzhou
- * @version 1.0
- * @title EhCacheUtils
- * @date 2021/3/1 11:56
- */
 @Slf4j
 public final class EhCacheUtils {
-    /**
-     * CacheManager
-     */
-    private static final CacheManager CACHE_MANAGER = SpringUtils.getBean(CacheManager.class);
+        private static final CacheManager CACHE_MANAGER = SpringUtils.getBean(CacheManager.class);
 
-    /**
-     * 获取Cache
-     *
-     * @author zmzhou
-     * @date 2021/3/1 12:49
-     */
-    public static Cache getCache() {
+        public static Cache getCache() {
         return CACHE_MANAGER.getCache("myCache");
     }
 
-    /**
-     * 添加缓存数据
-     *
-     * @param key   键
-     * @param value 值
-     * @author zmzhou
-     * @date 2021/3/1 12:50
-     */
-    public static void put(String key, Object value) {
+        public static void put(String key, Object value) {
         try {
             Cache cache = getCache();
             cache.put(key, value);
@@ -50,15 +21,7 @@ public final class EhCacheUtils {
         }
     }
 
-    /**
-     * 获取缓存数据
-     *
-     * @param key 键
-     * @return 缓存数据
-     * @author zmzhou
-     * @date 2021/3/1 12:53
-     */
-    public static <T> T get(String key) {
+        public static <T> T get(String key) {
         try {
             Cache cache = getCache();
             return (T) cache.get(key).get();
@@ -68,14 +31,7 @@ public final class EhCacheUtils {
         }
     }
 
-    /**
-     * 删除缓存数据
-     *
-     * @param key 键
-     * @author zmzhou
-     * @date 2021/3/1 12:53
-     */
-    public static void delete(String key) {
+        public static void delete(String key) {
         try {
             Cache cache = getCache();
             cache.evict(key);
@@ -84,10 +40,6 @@ public final class EhCacheUtils {
         }
     }
 
-    /**
-     * @author zmzhou
-     * @date 2021/3/1 12:02
-     */
-    private EhCacheUtils() {
+        private EhCacheUtils() {
     }
 }

@@ -1,7 +1,3 @@
-/*
- * Copyright © 2020-present zmzhou-star. All Rights Reserved.
- */
-
 package com.github.wz.webshell.utils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,40 +15,13 @@ import java.security.Security;
 import java.util.Arrays;
 import java.util.Base64;
 
-/**
- * AES对称加密算法
- * - 算法种类
- * - 对称算法（分组密码算法）：AES/DES/SM4
- * - 非对称算法（公钥密码算法）：RSA/SM2
- * - 摘要算法（杂凑算法）：MD5/SHA-I/SM3
- * - 国密算法 SMx (SM2/SM3/SM4/SM9/ZUC等国密(国家商用密码))
- *
- * @author zmzhou
- * @version 1.0
- * @date 2021/2/24 15:46
- */
 @Slf4j
 public final class SecretUtils {
-    /**
-     * 默认加密密钥
-     */
-    public static final String AES_KEY = "ws9ybUMn4F81t5oPKqJrqLKxERaYAS12";
-    /**
-     * 算法 "算法/模式/补码方式"
-     */
-    private static final String CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding";
+        public static final String AES_KEY = "ws9ybUMn4F81t5oPKqJrqLKxERaYAS12";
+        private static final String CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding";
     private static final String KEY_ALGORITHM = "AES";
 
-    /**
-     * AES加密
-     *
-     * @param content 需要加密的内容
-     * @param aesKey  加密密钥
-     * @return 密文
-     * @author zmzhou
-     * @date 2021/2/24 15:47
-     */
-    public static String encrypt(String content, String aesKey) {
+        public static String encrypt(String content, String aesKey) {
         try {
             // 创建密码器
             Cipher cipher = getCipher(Cipher.ENCRYPT_MODE, aesKey);
@@ -67,16 +36,7 @@ public final class SecretUtils {
         return null;
     }
 
-    /**
-     * AES解密
-     *
-     * @param content 待解密内容
-     * @param aesKey  解密密钥
-     * @return 明文
-     * @author zmzhou
-     * @date 2021/2/24 15:57
-     */
-    public static String decrypt(String content, String aesKey) {
+        public static String decrypt(String content, String aesKey) {
         try {
             // 先用base64解密
             byte[] contentByte = Base64.getDecoder().decode(content);
@@ -91,16 +51,7 @@ public final class SecretUtils {
         return null;
     }
 
-    /**
-     * 初始化密码器
-     *
-     * @param decryptMode 模式
-     * @param aesKey      加密密钥
-     * @return 密码器
-     * @author zmzhou
-     * @date 2021/2/24 16:04
-     */
-    private static Cipher getCipher(int decryptMode, String aesKey)
+        private static Cipher getCipher(int decryptMode, String aesKey)
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
         Security.addProvider(new BouncyCastleProvider());
         SecretKeySpec keySpec = new SecretKeySpec(aesKey.getBytes(), KEY_ALGORITHM);
@@ -111,17 +62,7 @@ public final class SecretUtils {
         return cipher;
     }
 
-    /**
-     * 微信小程序加密数据解密算法
-     *
-     * @param data       对称解密的目标密文
-     * @param sessionKey session_key login接口获取
-     * @param iv         对称解密算法初始向量
-     * @return 明文
-     * @author zmzhou
-     * @date 2021/2/25 15:51
-     */
-    public static String decrypt(String data, String sessionKey, String iv) {
+        public static String decrypt(String data, String sessionKey, String iv) {
         byte[] dataByte = Base64.getDecoder().decode(data);
         byte[] keyByte = Base64.getDecoder().decode(sessionKey);
         byte[] ivByte = Base64.getDecoder().decode(iv);

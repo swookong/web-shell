@@ -1,7 +1,3 @@
-/*
- * Copyright © 2020-present zmzhou-star. All Rights Reserved.
- */
-
 package com.github.wz.webshell.utils;
 
 import com.github.wz.webshell.Constants;
@@ -15,31 +11,11 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * sftp文件工具类
- *
- * @author zmzhou
- * @version 1.0
- * @title SftpFileUtils
- * @date 2021/2/28 21:52
- */
 public final class SftpFileUtils {
-    /**
-     * 长文件名正则表达式
-     */
-    private static final Pattern FILE_PATTERN = Pattern.compile(
+        private static final Pattern FILE_PATTERN = Pattern.compile(
             "^([-dlpbcsrwx]{10})\\s+([0-9]+)\\s+([0-9a-zA-Z]+)\\s+([0-9a-zA-Z]+)\\s+([0-9]+)\\s+([0-9a-zA-Z:\\s]+)\\s+");
 
-    /**
-     * 获取文件列表
-     *
-     * @param sftpUtils SftpUtils
-     * @param path      路径
-     * @return 文件列表
-     * @author zmzhou
-     * @date 2021/2/28 22:04
-     */
-    public static List<SftpFileTreeVo> getFileTree(SftpUtils sftpUtils, String path) {
+        public static List<SftpFileTreeVo> getFileTree(SftpUtils sftpUtils, String path) {
         List<SftpFileTreeVo> fileTree = new ArrayList<>();
         String parentPath = path;
         if (!parentPath.endsWith(Constants.SEPARATOR)) {
@@ -76,15 +52,7 @@ public final class SftpFileUtils {
         return fileTree;
     }
 
-    /**
-     * 获取文件所属用户
-     *
-     * @param longName 文件详情
-     * @return 文件所属用户
-     * @author zmzhou
-     * @date 2021/3/7 19:37
-     */
-    public static String getOwner(String longName) {
+        public static String getOwner(String longName) {
         // 正则匹配长文件详情
         Matcher m = FILE_PATTERN.matcher(longName);
         if (m.find()) {
@@ -93,12 +61,6 @@ public final class SftpFileUtils {
         return "";
     }
 
-    /**
-     * 私有构造器
-     *
-     * @author zmzhou
-     * @date 2021/2/28 21:53
-     */
-    private SftpFileUtils() {
+        private SftpFileUtils() {
     }
 }

@@ -1,7 +1,3 @@
-/*
- * Copyright © 2020-present zmzhou-star. All Rights Reserved.
- */
-
 package com.github.wz.webshell.listener;
 
 import lombok.extern.slf4j.Slf4j;
@@ -14,13 +10,6 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStoppedEvent;
 
-/**
- * springboot生命周期
- *
- * @author zmzhou
- * @version 1.0
- * date 2021/4/20 13:54
- */
 @Slf4j
 public class ApplicationEventListener implements ApplicationListener<ApplicationEvent> {
 

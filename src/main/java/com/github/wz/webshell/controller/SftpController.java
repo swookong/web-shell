@@ -24,24 +24,11 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-/**
- * SFTP控制层
- * SFTP是Secure File Transfer Protocol的缩写，安全文件传送协议
- *
- */
 @Slf4j
 @RequestMapping("/sftp")
 @RestController
 public class SftpController {
-    /**
-     * 获取文件列表
-     *
-     * @param path 路径
-     * @return 文件列表
-     * @author zmzhou
-     * @date 2021/3/1 14:10
-     */
-    @GetMapping("getFileTree")
+        @GetMapping("getFileTree")
     public ApiResult<List<SftpFileTreeVo>> getFileTree(String path) {
         String sessionId = WebShellUtils.getSessionId();
         log.info("sessionId：{}", sessionId);
@@ -59,15 +46,7 @@ public class SftpController {
         return result;
     }
 
-    /**
-     * 上传文件到服务器
-     *
-     * @param request HttpServletRequest
-     * @return
-     * @author zmzhou
-     * @date 2021/3/2 23:07
-     */
-    @PostMapping("/upload")
+        @PostMapping("/upload")
     public ApiResult<String> upload(HttpServletRequest request) {
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
         String sessionId = WebShellUtils.getSessionId();
@@ -97,14 +76,7 @@ public class SftpController {
         return result.data(res.get());
     }
 
-    /**
-     * 从服务器下载文件
-     *
-     * @param path 服务器文件路径
-     * @author zmzhou
-     * @date 2021/3/2 20:46
-     */
-    @GetMapping("/download")
+        @GetMapping("/download")
     public void download(String path, HttpServletResponse response) {
         if (StringUtils.isBlank(path)) {
             return;
@@ -149,15 +121,7 @@ public class SftpController {
         }
     }
 
-    /**
-     * 删除文件
-     *
-     * @param path 文件路径
-     * @return 删除结果
-     * @author zmzhou
-     * @date 2021/3/4 21:05
-     */
-    @DeleteMapping
+        @DeleteMapping
     public ApiResult<String> deleteFile(String path) {
         ApiResult<String> result = ApiResult.builder();
         if (StringUtils.isBlank(path)) {

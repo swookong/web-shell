@@ -1,7 +1,3 @@
-/*
- * Copyright © 2020-present zmzhou-star. All Rights Reserved.
- */
-
 package com.github.wz.webshell;
 
 import com.github.wz.webshell.utils.ThreadPoolUtils;
@@ -9,14 +5,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 
-/**
- * 程序入口
- *
- * @author zmzhou
- * @version 1.0
- * @title WebShellApplication
- * @date 2021/1/30 23:00
- */
 @SpringBootApplication
 @EnableCaching
 public class WebShellApplication {

@@ -1,7 +1,3 @@
-/*
- * Copyright © 2020-present zmzhou-star. All Rights Reserved.
- */
-
 package com.github.wz.webshell.handler;
 
 import com.github.wz.webshell.service.WebShellService;
@@ -13,43 +9,20 @@ import org.springframework.web.socket.*;
 import javax.annotation.Resource;
 
 
-/**
- * WebSocket处理器
- *
- * @author zmzhou
- * @version 1.0
- * @title WebShellWebSocketHandler
- * @date 2021/2/22 20:58
- */
 @Slf4j
 @Component
 public class WebShellWebSocketHandler implements WebSocketHandler {
     @Resource
     private WebShellService webShellService;
 
-    /**
-     * 用户连接上WebSocket回调
-     *
-     * @param webSocketSession WebSocketSession
-     * @author zmzhou
-     * @date 2021/2/23 20:35
-     */
-    @Override
+        @Override
     public void afterConnectionEstablished(WebSocketSession webSocketSession) {
         log.info("用户:{},连接Web Shell", WebShellUtils.getUuid(webSocketSession));
         //调用初始化连接
         webShellService.initConnection(webSocketSession);
     }
 
-    /**
-     * 收到消息回调
-     *
-     * @param webSocketSession WebSocketSession
-     * @param webSocketMessage WebSocketMessage
-     * @author zmzhou
-     * @date 2021/2/23 20:41
-     */
-    @Override
+        @Override
     public void handleMessage(WebSocketSession webSocketSession, WebSocketMessage<?> webSocketMessage) {
         if (webSocketMessage instanceof TextMessage) {
             log.info("用户:{},发送命令:{}", WebShellUtils.getUuid(webSocketSession), webSocketMessage.getPayload());
@@ -64,26 +37,12 @@ public class WebShellWebSocketHandler implements WebSocketHandler {
         }
     }
 
-    /**
-     * 错误的回调
-     *
-     * @param webSocketSession WebSocketSession
-     * @author zmzhou
-     * @date 2021/2/23 20:41
-     */
-    @Override
+        @Override
     public void handleTransportError(WebSocketSession webSocketSession, Throwable throwable) {
         log.error("用户:{},数据传输错误:{}", WebShellUtils.getUuid(webSocketSession), throwable);
     }
 
-    /**
-     * 连接关闭的回调
-     *
-     * @param webSocketSession WebSocketSession
-     * @author zmzhou
-     * @date 2021/2/23 20:43
-     */
-    @Override
+        @Override
     public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) {
         log.info("用户:{},断开webSocket连接:{}", WebShellUtils.getUuid(webSocketSession), closeStatus);
         //调用service关闭连接

@@ -1,7 +1,3 @@
-/*
- * Copyright © 2020-present zmzhou-star. All Rights Reserved.
- */
-
 package com.github.wz.webshell.interceptor;
 
 import com.github.wz.webshell.Constants;
@@ -15,23 +11,9 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * WebSocket拦截器
- *
- * @author zmzhou
- * @version 1.0
- * @title WebSocketInterceptor
- * @date 2021/1/31 13:18
- */
 @Slf4j
 public class WebSocketInterceptor implements HandshakeInterceptor {
-    /**
-     * 处理前beforeHandshake
-     *
-     * @author zmzhou
-     * @date 2021/1/31 13:21
-     */
-    @Override
+        @Override
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse,
                                    WebSocketHandler webSocketHandler, Map<String, Object> map) {
         if (serverHttpRequest instanceof ServletServerHttpRequest) {
