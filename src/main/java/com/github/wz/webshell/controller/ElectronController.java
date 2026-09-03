@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 桌面版控制层
  *
- * @author zmzhou
- * @version 1.0
- * @date 2021/3/6 19:41
  */
 @Slf4j
 @RequestMapping("/")

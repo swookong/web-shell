@@ -1,204 +1,288 @@
-html, body{
-    width: 100%;
-    height: 100%;
-}
-body{
-    font-family: 'Open Sans',sans-serif;
-    margin: 0;
-    background-color: slategray;
-}
-.indexContainer{
-    width: 100%;
-    height: calc(100% - 30px);
-}
-.menu {
-    color: #34495e;
-    width: 100%;
-    height: 30px;
-    line-height: 30px;
-    background-color: rgba(243, 242, 238, 1) !important;
-}
-.menu div {
-    padding: 0 10px;
-    display: inline-block;
-    cursor: pointer;
-}
-.menu div:hover {
-    background-color: #4a77d4;
-}
-.menu div:active {
-    background-color: #3762bc;
-}
-#login{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    margin: 0 auto;
-    width: 300px;
-}
-.login h1{
-    color: #34495e;
-    text-shadow: 0 0 5px;
-    letter-spacing: 1px;
-    text-align: center;
-}
-h1{
-    font-size: 2em;
-    margin: 0.67em 0;
-}
-.login input{
-    width: 278px;
-    height: 18px;
-    margin-bottom: 10px;
-    outline: none;
-    padding: 10px;
-    font-size: 13px;
-    color: #fff;
-    border: 1px solid #312E3D;
-    border-bottom: 1px solid #56536A;
-    border-radius: 4px;
-    background-color: #2D2D3F;
-}
-.button{
-    width: 300px;
-    min-height: 20px;
-    display: block;
-    background-color: #58a6ff;
-    border: 1px solid #37b6ff;
-    color: #fff;
-    padding: 9px 14px;
-    font-size: 15px;
-    line-height: normal;
-    border-radius: 5px;
-    margin: 0;
-}
-.sftp-container > div{
-    float: left;
-    border: 2px solid #3762bc;
-}
-.sftp-container{
-    width: 100%;
-    height: 100%;
-}
-.sftp-file-tree-div{
-    width: calc(30% - 8px);
-    height: 80%;
-}
-.sftp-file-tree-div > input{
-    padding: 0 15px;
-    height: 30px;
-    width: calc(100% - 180px);
-    background-color: slategray;
-    color: #fff;
-    border: 1px solid #99D3F5;
-    outline: none;
-    border-radius: 5px;
-}
-.sftp-file-tree-div .sftp-file-tree{
-    width: 100%;
-    height: calc(100% - 40px);
-    overflow-y: scroll;
-}
-.sftp-file-detail{
-    width: 70%;
-    height: 80%;
-    overflow-y: scroll;
-}
-.sftp-message-console {
-    width: calc(100% - 4px);
-    height: calc(20% - 8px);
-    color: whitesmoke;
-    font-size: 20px;
-}
-input::-webkit-input-placeholder{
-    color: whitesmoke;
-}
-/* Mozilla Firefox 19+ */
-input::-moz-placeholder{
-    color: whitesmoke;
+* {
+    box-sizing: border-box;
 }
 
-.file-detail-table {
+html, body {
     width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, var(--grad-a, #667eea) 0%, var(--grad-b, #764ba2) 100%);
+    background-attachment: fixed;
+    overflow: hidden;
 }
-.file-detail-table tr{
+
+body.menu-active {
+    padding-top: 44px;
+}
+
+.indexContainer {
     width: 100%;
-    height: 24px;
-    line-height: 24px;
+    height: 100%;
+    background-color: #1e1e2e;
 }
-table.file-detail-table {
-    font-family: verdana,arial,sans-serif;
-    font-size:11px;
-    color:#333333;
-    border-width: 1px;
-    border-color: #a9c6c9;
-    border-collapse: collapse;
-}
-table.file-detail-table th {
-    background-color: #3F3F3F;
-    color: white;
-}
-table.file-detail-table th:first-child, table.file-detail-table td:first-child {
-    padding-left: 10px;
-}
-table.file-detail-table th, table.file-detail-table td {
-    border-bottom: 1px solid #a9c6c9;
-    padding: 6px 0;
-    text-align: left;
-}
-table.file-detail-table tr:nth-child(even) { background-color:#c3dde0; }
-table.file-detail-table tr:nth-child(odd) { background-color:#d4e3e5; }
-table.file-detail-table tr:hover{
-    background-color: #dcddc0;
-}
-.data-cell .file-name {
-    cursor: pointer;
-}
-.sftp-file-tree-div form {
-    padding-left: 10px;
-    width: 130px;
-    display: inline-block;
-}
-.select-file {
-    position: relative;
-    display: inline-block;
-    background: #D0EEFF;
-    border: 1px solid #99D3F5;
-    border-radius: 5px;
-    padding: 5px 15px;
-    color: #1E88C7;
-    text-decoration: none;
-    line-height: 20px;
-}
-.select-file input {
-    position: absolute;
-    width: 120px;
-    height: 30px;
-    font-size: 100px;
-    right: 0;
+
+/* ============ 顶部菜单栏 ============ */
+.top-menu-bar {
+    width: 100%;
+    height: 44px;
+    position: fixed;
     top: 0;
-    opacity: 0;
+    left: 0;
+    z-index: 9999;
+    background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%);
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
-.select-file:hover {
-    background: #AADFFD;
-    border-color: #78C3F3;
-    color: #004974;
-    text-decoration: none;
+.top-menu-bar .brand-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+.top-menu-bar .conn-badge {
+    font-size: 12px;
+    background: rgba(255,255,255,0.15);
+    padding: 3px 10px;
+    border-radius: 12px;
+    color: #a3e635;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.top-menu-bar .conn-badge i {
+    font-size: 11px;
+}
+
+/* ============ 登录卡片 ============ */
+.login-overlay {
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 36px 32px 24px;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    animation: cardFloat 0.6s ease-out;
+}
+
+@keyframes cardFloat {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.login-header {
+    margin-bottom: 28px;
+}
+.login-header .logo-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    font-size: 32px;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}
+
+.login-card .form-label {
+    font-weight: 500;
+    font-size: 13px;
+    color: #495057;
+    margin-bottom: 6px;
+}
+.login-card .form-label i {
+    color: #667eea;
+}
+
+.login-card .input-group-text {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+}
+
+.login-card .form-control {
+    border-radius: 6px;
+    padding: 8px 12px;
+    transition: all 0.2s;
+}
+.login-card .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.login-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    height: 44px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.35);
+}
+.login-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+.login-btn:active {
+    transform: translateY(0);
+}
+
+.login-footer {
+    margin-top: 20px;
+}
+
+/* ============ SFTP 页面 ============ */
+.sftp-body {
+    background: #f0f2f5;
+    overflow: hidden;
+}
+
+.bg-sftp-nav {
+    background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    height: 48px;
+}
+.bg-sftp-nav .navbar-brand {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+.bg-sftp-nav .host-badge {
+    font-size: 12px;
+    background: rgba(255,255,255,0.15);
+    padding: 3px 10px;
+    border-radius: 12px;
+    color: #a3e635;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sftp-main {
+    height: calc(100vh - 48px - 52px);
+}
+.sftp-main .row {
+    height: 100%;
+}
+.sftp-tree-col, .sftp-detail-col {
+    height: 100%;
+}
+.sftp-tree-col .card,
+.sftp-detail-col .card {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.sftp-file-tree {
+    max-height: calc(100vh - 260px);
+    overflow-y: auto;
+}
+.sftp-file-tree .jstree-default .jstree-clicked {
+    background: #eef2ff;
+    border-radius: 4px;
+}
+
+.upload-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+.upload-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.45);
+}
+.upload-btn i {
+    color: #fff;
+}
+
+.sftp-table {
+    font-size: 13px;
+}
+.sftp-table th {
+    font-weight: 600;
+    font-size: 12px;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+}
+.sftp-table td {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 8px 12px;
+}
+.sftp-table tbody tr:hover {
+    background-color: #f0f7ff !important;
+}
+.sftp-table .mono {
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 12px;
+    color: #6c757d;
+}
+.sftp-table .file-name {
+    cursor: pointer;
+    color: #212529;
+    font-weight: 500;
+}
+.sftp-table .file-name:hover .file-name-text {
+    color: #667eea;
+    text-decoration: underline;
+}
+.sftp-table .file-name.jstree-default {
+    background: none !important;
+}
+.sftp-table .jstree-icon {
+    display: none !important;
+}
+
+.sftp-message-console {
+    width: 100%;
+    height: 52px;
+    background: #1e1e2e;
+    color: #a3e635;
+    font-size: 12px;
+    padding: 8px 16px;
+    overflow-y: auto;
+    font-family: 'Consolas', 'Monaco', monospace;
+    border-top: 2px solid #667eea;
+    line-height: 1.4;
+}
+
+input::-webkit-input-placeholder { color: #adb5bd; }
+input::-moz-placeholder { color: #adb5bd; }
+
+.select-file {
+    display: none;
 }
 .delete-data {
-    background-color: #EA633E;
+    background: none;
+    border: none;
+    color: #dc3545;
+    padding: 4px 8px;
+    border-radius: 4px;
     cursor: pointer;
-    color: white;
-    border: 0;
+    transition: all 0.15s;
 }
-.github-star a {
-    padding: 10px 10px 0;
-}
-.github-star {
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    align-content: center;
-    justify-content: center;
+.delete-data:hover {
+    background-color: #dc3545;
+    color: #fff;
 }

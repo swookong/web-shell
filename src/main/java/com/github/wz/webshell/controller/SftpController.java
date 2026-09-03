@@ -1,7 +1,3 @@
-/*
- * Copyright © 2020-present zmzhou-star. All Rights Reserved.
- */
-
 package com.github.wz.webshell.controller;
 
 import com.github.wz.webshell.Constants;
@@ -19,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
@@ -33,10 +28,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * SFTP控制层
  * SFTP是Secure File Transfer Protocol的缩写，安全文件传送协议
  *
- * @author zmzhou
- * @version 1.0
- * @title SftpController
- * @date 2021/3/1 13:54
  */
 @Slf4j
 @RequestMapping("/sftp")
@@ -128,7 +119,13 @@ public class SftpController {
             SftpUtils sftpUtils = new SftpUtils(sshData);
             if (sftpUtils.login()) {
                 // 设置信息给客户端不解析
-                String type = new MimetypesFileTypeMap().getContentType(path);
+                String type;
+                try {
+                    type = java.nio.file.Files.probeContentType(java.nio.file.Paths.get(path));
+                } catch (Exception ex) {
+                    type = "application/octet-stream";
+                }
+                if (type == null) type = "application/octet-stream";
                 // 设置content-type，即告诉客户端所发送的数据属于什么类型
                 response.setHeader("Content-type", type);
                 // 设置强制下载不打开
