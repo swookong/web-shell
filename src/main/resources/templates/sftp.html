@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title th:text="'web sftp ' + ${host}">web sftp</title>
+    <link rel="shortcut icon" th:href="@{/static/img/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/static/css/webShell.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/jstree/style.min.css}"/>
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.5.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/web-socket.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/web-shell.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/jstree.min.js}"></script>
+</head>
+<body>
+    <div class="sftp-container">
+        <div class="sftp-file-tree-div">
+            <input id="current_path" placeholder="当前目录" value="/">
+            <form action="#" enctype="multipart/form-data" id="upload_form">
+                <a href="javascript:" class="select-file">选择文件上传
+                    <input type="text" name="path" id="path">
+                    <input type="file" name="file" id="file" multiple>
+                </a>
+            </form>
+            <div id="file_tree" class="sftp-file-tree"></div>
+        </div>
+        <div id="file_detail" class="sftp-file-detail">
+            <table class="file-detail-table">
+                <tr>
+                    <th>文件名</th>
+                    <th>文件类型</th>
+                    <th>文件属性</th>
+                    <th>目录/链接个数</th>
+                    <th>所有者</th>
+                    <th>组</th>
+                    <th>文件大小</th>
+                    <th>修改时间</th>
+                    <th>操作</th>
+                </tr>
+            </table>
+        </div>
+        <div id="message_console" class="sftp-message-console"></div>
+    </div>
+</body>
+<script th:inline="javascript">
+$(function () {
+    let url = window.location.href;
+    let urlParams = window.location.search;
+    history.replaceState(null, null, url.replace(urlParams, ""))
+    const login = [[${login}]];
+    if (!login && window.confirm("登录失败，请重新连接SFTP服务！")) {
+        // 关闭页面
+        window.opener = null;
+        window.open('', '_self');
+        window.close();
+    }
+    $("#file").change(function () {
+        if($(this).val() !== ""){
+            uploadFile();
+        }
+    })
+    function getFileTree(instance, selectedNode) {
+        $.ajax({
+            url : "/sftp/getFileTree",
+            dataType : "json",
+            data: { 'path': selectedNode.id },
+            type : "get",
+            success : function(res) {
+                console.info(res);
+                checkErr(res)
+                let fileTree = res.data
+                if(fileTree && fileTree.length > 0) {
+                    selectedNode.children = [];
+                    for (const i in fileTree) {
+                        let item = fileTree[i];
+                        instance.create_node(selectedNode, item, "last");
+                    }
+                    instance.open_node(selectedNode);
+                    //全不选择
+                    instance.deselect_all();
+                    loadTableData(fileTree);
+                }else{
+                    showTips("暂无数据！");
+                    $(".file-detail-table .data-cell").remove();
+                }
+            }
+        });
+    }
+    let $fileTree = $('#file_tree');
+    let $currentPathInput = $("#current_path");
+    function loadTableData(data) {
+        let fileDetail = "";
+        $(".file-detail-table .data-cell").remove();
+        // 根目录以外的目录下新增上级目录项
+        if (data[0].id.substring(1).indexOf('/') > 0) {
+            let id = data[0].id;
+            let pid = id.substring(0, id.lastIndexOf('/', id.lastIndexOf('/') - 1) + 1).replace(/(\/*$)/g,"") || '/';
+            fileDetail = "<tr class='data-cell'><td class='file-name jstree-default' id='" + pid + "'>" +
+                "<i class='jstree-icon jstree-folder'></i>..</td><td>上级目录</td>" +
+                "<td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+        }
+        for (const d in data) {
+            let item = data[d];
+            let icon = item.icon;
+            if(icon && !icon.startsWith('jstree')){
+                icon = "' style='background-image: url(" + icon
+                    + ");background-position: center center;background-size: auto;'";
+            }
+            fileDetail += "<tr class='data-cell'>";
+            fileDetail += "<td class='file-name jstree-default' id='" + item.id + "'>" +
+                "<i class='jstree-icon " + icon + "'></i>"+ item.text +"</td>";
+            fileDetail += "<td>"+ item.fileType +"</td>";
+            fileDetail += "<td>"+ item.fileAttr +"</td>";
+            fileDetail += "<td>"+ item.numberOfDir +"</td>";
+            fileDetail += "<td>"+ item.owner +"</td>";
+            fileDetail += "<td>"+ item.group +"</td>";
+            fileDetail += "<td>"+ item.size +"</td>";
+            fileDetail += "<td>"+ item.modifiedDate +"</td>";
+            fileDetail += "<td><button class='delete-data' value='" + item.id + "'>删除</button></td></tr>";
+        }
+        $(".file-detail-table").append(fileDetail);
+        $('.data-cell .file-name').bind('click', function() {
+            let tree = $fileTree.jstree(true);
+            let val = $(this).attr('id');
+            let file = tree.get_node(val)
+            // 单击文件夹设置输入框数据
+            if (file && "jstree-folder" === file.icon) {
+                $currentPathInput.val(val)
+                tree.select_node(val);
+            }
+            $currentPathInput.focus()
+        }).bind('dblclick', function() {
+            let tree = $fileTree.jstree(true);
+            let val = $(this).attr('id');
+            let file = tree.get_node(val)
+            // 双击 除文件夹外都下载
+            if (file && "jstree-folder" !== file.icon) {
+                window.open(window.location.origin + "/sftp/download?path=" + val, '_blank')
+            }
+        });
+
+        // 删除数据
+        $('.delete-data').bind('click', function() {
+            let val = $(this).attr("value");
+            if(window.confirm('你确定要删除“' + val + '”吗？')){
+                $.ajax({
+                    url : "/sftp",
+                    type : "delete",
+                    dataType : "json",
+                    data: { path: val },
+                    success: function(res) {
+                        if (checkErr(res)) {
+                            refreshTree();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    // 根目录
+    let rootDirectory = { "id": "/", "parent": "#", "text": "/", "icon": "jstree-folder", 'state': { 'opened': true }}
+
+    $fileTree.on("changed.jstree", function (e, data) {
+        if(data.selected.length) {
+            let selected = data.instance.get_node(data.selected[0])
+            console.log('The selected node is: ' + selected.id);
+            $currentPathInput.val(selected.id)
+            // 只查询文件夹的下一级文件
+            if ("jstree-folder" === selected.icon) {
+                getFileTree(data.instance, selected)
+            }
+        }
+    }).jstree({
+        "core" : {
+            "multiple" : false,
+            'check_callback': true,
+            'data' : function (obj, callback){
+                $.ajax({
+                    url : "/sftp/getFileTree",
+                    dataType : "json",
+                    data: { path: '/' },
+                    type : "get",
+                    success : function(res) {
+                        checkErr(res)
+                        let fileTree = res.data
+                        if(fileTree) {
+                            loadTableData(fileTree);
+                            fileTree.unshift(rootDirectory)
+                            callback.call(this, fileTree);
+                        }else{
+                            showTips("暂无数据！");
+                            $(".file-detail-table .data-cell").remove();
+                        }
+                    }
+                });
+            }
+        },
+        "checkbox" : {
+            "keep_selected_style" : false
+        },
+        "plugins" : [ "checkbox" ]
+    });
+
+    /**
+     * 选中node
+     * @param {String} nodeId 节点id
+     * @param {String} pNodeId 父节点id（可选）
+     */
+    function selectNode(nodeId, pNodeId) {
+        let tree = $fileTree.jstree(true);
+        if (tree.get_node(nodeId)){
+            tree.select_node(nodeId);
+            return true;
+        } else if (pNodeId && tree.get_node(pNodeId)){
+            tree.select_node(pNodeId);
+            if (nodeId !== pNodeId) {
+                $currentPathInput.val(nodeId)
+                $currentPathInput.focus()
+                setTimeout(function () {
+                    selectNode(nodeId);
+                }, 1000)
+            }
+            return true;
+        } else {
+            return selectNode(nodeId, nodeId.substring(0, nodeId.lastIndexOf('/')))
+        }
+    }
+    $currentPathInput.bind("keypress", function(event){
+        if(event.keyCode === 13){
+            // 删除最后一个/
+            let val = $(this).val().replace(/(\/*$)/g,"");
+            console.log(val)
+            if (val) {
+                selectNode(val);
+            }
+        }
+    })
+});
+</script>
+</html>
