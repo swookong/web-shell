@@ -18,19 +18,19 @@
 
 ## 🛠️ 技术栈
 
-| 分类 | 技术 | 版本 |
-|------|------|------|
-| 后端框架 | Spring Boot | 2.5.4 |
-| Web 框架 | Spring MVC + WebSocket | 5.3.9 |
-| SSH 客户端 | JSch (com.github.mwiede) | 0.2.18 |
-| 缓存 | EhCache | 2.10.9.2 |
-| 前端终端 | xterm.js | 4.x |
-| UI 框架 | Bootstrap 5 | 5.3.3 |
-| 图标 | Bootstrap Icons | 1.11.3 |
-| 模板引擎 | Thymeleaf | 3.0.12 |
-| JSON 处理 | Jackson | 2.12.4 |
-| 日志 | Log4j2 | 2.14.1 |
-| 工具库 | Lombok / Commons-Lang3 / Commons-IO | - |
+| 分类       | 技术                                | 版本     |
+|------------|-------------------------------------|----------|
+| 后端框架   | Spring Boot                         | 2.5.4    |
+| Web 框架   | Spring MVC + WebSocket              | 5.3.9    |
+| SSH 客户端 | JSch (com.github.mwiede)            | 0.2.18   |
+| 缓存       | EhCache                             | 2.10.9.2 |
+| 前端终端   | xterm.js                            | 4.x      |
+| UI 框架    | Bootstrap 5                         | 5.3.3    |
+| 图标       | Bootstrap Icons                     | 1.11.3   |
+| 模板引擎   | Thymeleaf                           | 3.0.12   |
+| JSON 处理  | Jackson                             | 2.12.4   |
+| 日志       | Log4j2                              | 2.14.1   |
+| 工具库     | Lombok / Commons-Lang3 / Commons-IO | -        |
 
 ---
 
@@ -44,7 +44,7 @@ web-shell/
 │   ├── wechat-pay.png
 │   └── alipay-pay.png
 └── src/main/
-    ├── java/com/github/wz/webshell/
+    ├── java/com/github/wz/web/shell/
     │   ├── WebShellApplication.java          # 启动类
     │   ├── Constants.java                    # 常量定义
     │   ├── config/                           # 配置类
@@ -112,12 +112,12 @@ mvn clean package -DskipTests
 mvn clean package -DskipTests -o
 ```
 
-打包产物：`target/web-shell-1.0.1.jar`（Fat Jar，自带所有依赖）
+打包产物：`target/web-shell-1.0.0.jar`（Fat Jar，自带所有依赖）
 
 ### 启动
 
 ```bash
-java -jar target/web-shell-1.0.1.jar
+java -jar target/web-shell-1.0.0.jar
 ```
 
 浏览器访问：`http://localhost:9999`
@@ -165,13 +165,14 @@ spring:
 mvn clean package -DskipTests
 
 # 2. 拷贝 jar 到目标机器
-scp target/web-shell-1.0.1.jar user@offline-server:/opt/
+scp target/web-shell-1.0.0.jar user@offline-server:/opt/
 
 # 3. 离线启动
-java -jar /opt/web-shell-1.0.1.jar
+java -jar /opt/web-shell-1.0.0.jar
 ```
 
 已本地化资源清单：
+
 - ✅ Bootstrap 5.3.3 CSS + JS
 - ✅ Bootstrap Icons CSS + woff2 字体
 - ✅ xterm.js 终端组件
@@ -186,8 +187,8 @@ java -jar /opt/web-shell-1.0.1.jar
 
 <div align="center">
 
-| 微信支付 | 支付宝 |
-|:---:|:---:|
+|             微信支付             |             支付宝             |
+|:--------------------------------:|:------------------------------:|
 | ![微信支付](docs/wechat-pay.png) | ![支付宝](docs/alipay-pay.png) |
 
 </div>
