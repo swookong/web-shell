@@ -91,7 +91,7 @@ public final class SftpUtils {
         log.info("文件上传成功！！ 耗时：{}ms", (System.currentTimeMillis() - start));
     }
 
-    public InputStream download(String path) {
+    public InputStream download(String path) throws SftpException {
         // 文件所在目录
         String directory = path.substring(0, path.lastIndexOf(Constants.SEPARATOR));
         // 文件名
@@ -99,17 +99,12 @@ public final class SftpUtils {
         return download(directory, fileName);
     }
 
-    public InputStream download(String directory, String fileName) {
-        try {
-            if (StringUtils.isNotBlank(directory)) {
-                channelSftp.cd(directory);
-            }
-            log.info("下载文件:{}/{}", directory, fileName);
-            return channelSftp.get(fileName);
-        } catch (SftpException e) {
-            log.error("下载文件:{}/{}异常！", directory, fileName, e);
+    public InputStream download(String directory, String fileName) throws SftpException {
+        if (StringUtils.isNotBlank(directory)) {
+            channelSftp.cd(directory);
         }
-        return null;
+        log.info("下载文件:{}/{}", directory, fileName);
+        return channelSftp.get(fileName);
     }
 
     private boolean delete(String directory, String fileName) {

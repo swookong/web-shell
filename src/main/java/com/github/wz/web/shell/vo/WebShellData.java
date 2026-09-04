@@ -13,4 +13,6 @@ public class WebShellData implements Serializable {
     private String username;
     private String password;
     private String command = "";
+    private Integer cols;
+    private Integer rows;
 }

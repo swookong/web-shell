@@ -24,7 +24,11 @@ public final class EhCacheUtils {
     public static <T> T get(String key) {
         try {
             Cache cache = getCache();
-            return (T) cache.get(key).get();
+            Cache.ValueWrapper wrapper = cache.get(key);
+            if (wrapper == null) {
+                return null;
+            }
+            return (T) wrapper.get();
         } catch (Exception e) {
             log.error("获取缓存数据失败：", e);
             return null;

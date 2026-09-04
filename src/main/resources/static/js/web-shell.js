@@ -18,25 +18,77 @@ let encrypt = function (content) {
 function showTips(msg) {
     $("#message_console").html(new Date().toLocaleTimeString() + "：" + msg);
 }
+
+function redirectToLogin() {
+    var container = document.createElement('div');
+    container.className = 'position-fixed top-50 start-50 translate-middle';
+    container.style.zIndex = '9999';
+    container.innerHTML =
+        '<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2500" style="min-width:320px;">' +
+        '<div class="toast-header bg-warning text-dark">' +
+        '<i class="bi bi-exclamation-triangle-fill me-2"></i>' +
+        '<strong class="me-auto">会话已过期</strong>' +
+        '</div>' +
+        '<div class="toast-body bg-warning-subtle text-dark py-3">登录已过期，正在跳转至登录页...</div>' +
+        '</div>';
+    document.body.appendChild(container);
+
+    var toastEl = container.querySelector('.toast');
+    var toast = new bootstrap.Toast(toastEl, { delay: 2500, autohide: true });
+    toast.show();
+
+    setTimeout(function () {
+        window.opener = null;
+        window.open('', '_self');
+        window.close();
+        if (window.top !== window.self) {
+            window.top.location.href = '/';
+        } else {
+            window.location.href = '/';
+        }
+    }, 2500);
+}
+
+function checkErr(data) {
+    if (!data) {
+        redirectToLogin();
+        return false;
+    }
+    if (data.code === 401) {
+        redirectToLogin();
+        return false;
+    }
+    if (data.code === 200) {
+        showTips("操作成功！");
+        return true;
+    }
+    showTips("操作失败！" + (data.msg || "未知错误"));
+    return false;
+}
+
+$(document).ajaxError(function (event, xhr) {
+    if (xhr.status === 401) {
+        redirectToLogin();
+    }
+});
+
 function uploadFile() {
     let val = $('#current_path').val();
-    // 设置上传路径
     $("#path").val(val);
-    // 拼接所有上传文件名
     let files = $("#file").get(0).files;
     let fileNames = [];
     for (let i = 0; i < files.length; i++) {
         fileNames.push(files[i].name)
     }
-    //获取form数据
     let formData = new FormData(document.querySelector("#upload_form"));
     $.ajax({
         url: "/sftp/upload",
         type: "POST",
         data: formData,
-        processData: false,  // 不处理数据
-        contentType: false,   // 不设置内容类型
+        processData: false,
+        contentType: false,
         success: function (res) {
+            if (!checkErr(res)) return;
             let tips = fileNames.join(",") + res.data;
             showTips(tips);
             let $tree = $('#file_tree').jstree(true);
@@ -46,18 +98,7 @@ function uploadFile() {
         }
     });
 }
-function checkErr(data) {
-    if (data.code === 200) {
-        showTips("操作成功！");
-        return true;
-    }
-    showTips("操作失败！" + data.msg);
-    return false;
-}
 
-/**
- * 刷新数据
- */
 function refreshTree() {
     let val = $('#current_path').val();
     let $tree = $('#file_tree').jstree(true);

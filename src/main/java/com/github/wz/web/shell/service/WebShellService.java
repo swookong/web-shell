@@ -2,6 +2,7 @@ package com.github.wz.web.shell.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wz.web.shell.Constants;
+import com.github.wz.web.shell.utils.EhCacheUtils;
 import com.github.wz.web.shell.utils.SecretUtils;
 import com.github.wz.web.shell.utils.ThreadPoolUtils;
 import com.github.wz.web.shell.utils.WebShellUtils;
@@ -16,9 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
@@ -27,7 +30,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 public class WebShellService {
-    private static final Map<String, Object> SSH_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, ShellConnectInfo> SSH_MAP = new ConcurrentHashMap<>();
+
+    @Resource
+    private ObjectMapper objectMapper;
 
     public void initConnection(WebSocketSession session) {
         JSch jSch = new JSch();
@@ -35,12 +41,11 @@ public class WebShellService {
         shellConnectInfo.setJsch(jSch);
         shellConnectInfo.setWebSocketSession(session);
         String uuid = WebShellUtils.getUuid(session);
-        //将这个ssh连接信息放入缓存中
         SSH_MAP.put(uuid, shellConnectInfo);
+        log.info("WebSocket initConnection uuid={}, sessionId={}, SSH_MAP size={}", uuid, session.getId(), SSH_MAP.size());
     }
 
     public void recvHandle(String buffer, WebSocketSession session) {
-        ObjectMapper objectMapper = new ObjectMapper();
         WebShellData shellData;
         try {
             shellData = objectMapper.readValue(buffer, WebShellData.class);
@@ -49,11 +54,11 @@ public class WebShellService {
             return;
         }
         String userId = WebShellUtils.getUuid(session);
-        //找到刚才存储的ssh连接对象
-        ShellConnectInfo shellConnectInfo = (ShellConnectInfo) SSH_MAP.get(userId);
+        log.info("recvHandle uuid={}, operate={}, sessionOpen={}", userId, shellData.getOperate(), session.isOpen());
+        ShellConnectInfo shellConnectInfo = SSH_MAP.get(userId);
         if (shellConnectInfo != null) {
             if (Constants.OPERATE_CONNECT.equals(shellData.getOperate())) {
-                //启动线程异步处理
+                log.info("开始连接SSH {}:{} as {}", shellData.getHost(), shellData.getPort(), shellData.getUsername());
                 ThreadPoolUtils.execute(() -> {
                     try {
                         connectToSsh(shellConnectInfo, shellData, session);
@@ -66,23 +71,31 @@ public class WebShellService {
             } else if (Constants.OPERATE_COMMAND.equals(shellData.getOperate())) {
                 String command = shellData.getCommand();
                 sendToTerminal(shellConnectInfo.getChannel(), command);
+            } else if (Constants.OPERATE_RESIZE.equals(shellData.getOperate())) {
+                log.debug("resize terminal: cols={}, rows={}", shellData.getCols(), shellData.getRows());
             } else {
-                log.error("不支持的操作");
-                close(session);
+                log.warn("忽略不支持的操作: {}", shellData.getOperate());
             }
+        } else {
+            log.warn("recvHandle: 找不到 uuid={} 对应的 SSH 连接信息，SSH_MAP size={}", userId, SSH_MAP.size());
         }
     }
 
     public void close(WebSocketSession session) {
         String userId = WebShellUtils.getUuid(session);
-        ShellConnectInfo shellConnectInfo = (ShellConnectInfo) SSH_MAP.get(userId);
+        ShellConnectInfo shellConnectInfo = SSH_MAP.get(userId);
+        log.info("close uuid={}, sessionOpen={}", userId, session != null ? session.isOpen() : "null");
         if (shellConnectInfo != null) {
-            //断开连接
             if (shellConnectInfo.getChannel() != null) {
                 shellConnectInfo.getChannel().disconnect();
             }
-            //map中移除
             SSH_MAP.remove(userId);
+            log.info("close完成, SSH_MAP size={}", SSH_MAP.size());
+        }
+        String httpSessionId = WebShellUtils.getHttpSessionId(session);
+        if (httpSessionId != null) {
+            EhCacheUtils.delete(httpSessionId);
+            log.info("清除 EhCache sessionId={}", httpSessionId);
         }
     }
 
@@ -130,7 +143,7 @@ public class WebShellService {
 
     public void sendMessage(WebSocketSession session, byte[] buffer) {
         try {
-            session.sendMessage(new TextMessage(buffer));
+            session.sendMessage(new TextMessage(new String(buffer, StandardCharsets.ISO_8859_1)));
         } catch (IOException e) {
             log.error("数据写回前端异常：", e);
         }

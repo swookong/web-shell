@@ -17,10 +17,12 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse,
                                    WebSocketHandler webSocketHandler, Map<String, Object> map) {
         if (serverHttpRequest instanceof ServletServerHttpRequest) {
-            //生成一个UUID
+            ServletServerHttpRequest request = (ServletServerHttpRequest) serverHttpRequest;
             String uuid = UUID.randomUUID().toString().replace("-", "");
-            //将uuid放到websocketsession中
             map.put(Constants.USER_UUID_KEY, uuid);
+            String sessionId = request.getServletRequest().getSession().getId();
+            map.put(Constants.HTTP_SESSION_ID_KEY, sessionId);
+            log.info("beforeHandshake uuid={}, httpSessionId={}", uuid, sessionId);
             return true;
         }
         return false;

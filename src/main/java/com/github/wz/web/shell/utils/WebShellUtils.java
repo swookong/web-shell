@@ -11,6 +11,11 @@ public final class WebShellUtils {
         return String.valueOf(webSocketSession.getAttributes().get(Constants.USER_UUID_KEY));
     }
 
+    public static String getHttpSessionId(WebSocketSession webSocketSession) {
+        Object val = webSocketSession.getAttributes().get(Constants.HTTP_SESSION_ID_KEY);
+        return val != null ? val.toString() : null;
+    }
+
     public static String getSessionId() {
         return SpringUtils.getSession().getId();
     }
