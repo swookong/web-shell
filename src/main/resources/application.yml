@@ -55,7 +55,7 @@ logging:
   #  config: classpath:logback-spring.xml
   level:
     web: INFO
-    com.github.zmzhoustar: INFO
+    com.github.wz: INFO
     org.springframework: INFO
 logstash:
-  address: 127.0.0.1:4567
+  address: 127.0.0.1:5555

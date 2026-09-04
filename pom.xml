@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.github.wz</groupId>
 	<artifactId>web-shell</artifactId>
-	<version>1.1.1</version>
+	<version>1.0.0</version>
 	<name>web-shell</name>
 	<description>web-shell project for Spring Boot</description>
 	<properties>
@@ -75,12 +75,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
-		<!-- 鑾峰彇绯荤粺淇℃伅 -->
-		<dependency>
-			<groupId>com.github.zmzhou-star</groupId>
-			<artifactId>server-info</artifactId>
-			<version>1.0</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -133,13 +127,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>aliyun spring plugins</id>
-			<name>aliyun Spring plugins</name>
-			<url>https://maven.aliyun.com/repository/spring-plugin</url>
-		</pluginRepository>
-	</pluginRepositories>
 	<repositories>
 		<repository>
 			<id>aliyunmaven</id>

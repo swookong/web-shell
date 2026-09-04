@@ -34,7 +34,8 @@
                 </label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-globe"></i></span>
-                    <input type="text" class="form-control" id="host" required="required" placeholder="例如: 192.168.1.100" value="127.0.0.1"/>
+                    <input type="text" class="form-control" id="host" required="required"
+                           placeholder="例如: 192.168.1.10" value="127.0.0.1"/>
                 </div>
             </div>
             <div class="row g-3 mb-3">
@@ -44,14 +45,16 @@
                     </label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-at"></i></span>
-                        <input type="text" class="form-control" id="username" value="root" required="required" placeholder="root"/>
+                        <input type="text" class="form-control" id="username" value="root" required="required"
+                               placeholder="root"/>
                     </div>
                 </div>
                 <div class="col-4">
                     <label for="port" class="form-label">
                         <i class="bi bi-plug me-1"></i>端口
                     </label>
-                    <input type="number" class="form-control" id="port" value="22" required="required" placeholder="22"/>
+                    <input type="number" class="form-control" id="port" value="22" required="required"
+                           placeholder="22"/>
                 </div>
             </div>
             <div class="mb-4">
@@ -60,7 +63,8 @@
                 </label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-key"></i></span>
-                    <input type="password" class="form-control" id="password" required="required" placeholder="请输入密码"/>
+                    <input type="password" class="form-control" id="password" required="required"
+                           placeholder="请输入密码"/>
                     <button type="button" class="btn btn-outline-secondary" onclick="togglePassword(this)">
                         <i class="bi bi-eye-slash"></i>
                     </button>
@@ -94,153 +98,153 @@
 <div id="terminal" class="indexContainer"></div>
 
 <script>
-function togglePassword(btn) {
-    var input = document.getElementById('password');
-    var icon = btn.querySelector('i');
-    if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'bi bi-eye';
-    } else {
-        input.type = 'password';
-        icon.className = 'bi bi-eye-slash';
-    }
-}
-
-function disconnect() {
-    if (window.confirm('确定要断开连接吗？')) {
-        if (client && client._connection) {
-            client._connection.close();
+    function togglePassword(btn) {
+        var input = document.getElementById('password');
+        var icon = btn.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.className = 'bi bi-eye';
+        } else {
+            input.type = 'password';
+            icon.className = 'bi bi-eye-slash';
         }
     }
-}
 
-$(document).ready(function () {
-    var url = window.location.href;
-    if (!url.endsWith('/?#')) {
-        window.location.href = url + '?#';
+    function disconnect() {
+        if (window.confirm('确定要断开连接吗？')) {
+            if (client && client._connection) {
+                client._connection.close();
+            }
+        }
     }
-    var num1 = Math.round(Math.random() * 360);
-    var num2 = Math.round(Math.random() * 360);
-    document.documentElement.style.setProperty('--grad-a', 'hsl(' + num1 + ', 70%, 65%)');
-    document.documentElement.style.setProperty('--grad-b', 'hsl(' + num2 + ', 70%, 55%)');
-})
 
-var rows = document.querySelector(".indexContainer").offsetHeight / 16 - 5;
-var cols = document.querySelector(".indexContainer").offsetWidth / 9;
-var term = new Terminal({
-    rendererType: "canvas",
-    pid: 1,
-    name: 'terminal',
-    rows: parseInt(rows),
-    cols: parseInt(cols),
-    convertEol: true,
-    scrollback: 500,
-    disableStdin: false,
-    cursorStyle: 'underline',
-    cursorBlink: true,
-    tabStopWidth: 8,
-    screenKeys: true,
-    theme: {
-        foreground: '#58a6ff',
-        background: '#1e1e2e',
-        cursor: "#f9e2af",
-        lineHeight: 16
-    }
-});
+    $(document).ready(function () {
+        var url = window.location.href;
+        if (!url.endsWith('/?#')) {
+            window.location.href = url + '?#';
+        }
+        var num1 = Math.round(Math.random() * 360);
+        var num2 = Math.round(Math.random() * 360);
+        document.documentElement.style.setProperty('--grad-a', 'hsl(' + num1 + ', 70%, 65%)');
+        document.documentElement.style.setProperty('--grad-b', 'hsl(' + num2 + ', 70%, 55%)');
+    })
 
-term.write('Hello from \\x1B[1;3;31mxterm.js\\x1B[0m $ ')
-term.prompt = function () { term.write("\\r\\n$ "); };
-
-var client = new WebSocketClient();
-
-function connect(params, divId) {
-    term.open(document.getElementById(divId), true);
-    term.write('\\r\\nConnecting...');
-    client.connect({
-        onError: function (error) {
-            term.write('Error: ' + error + '\\r\\n');
-        },
-        onConnect: function () {
-            client.send(params);
-            $("body").addClass("menu-active");
-            $("#login").addClass("d-none").removeClass("d-flex");
-            $("#menu").removeClass("d-none");
-            $("#connHost").text(params.host);
-        },
-        onClose: function () {
-            term.write("\\r\\nConnection closed\\r\\n");
-            $("#login").removeClass("d-none").addClass("d-flex");
-            $("body").removeClass("menu-active");
-            $("#menu").addClass("d-none");
-        },
-        onData: function (data) {
-            term.write(data);
+    var rows = document.querySelector(".indexContainer").offsetHeight / 16 - 5;
+    var cols = document.querySelector(".indexContainer").offsetWidth / 9;
+    var term = new Terminal({
+        rendererType: "canvas",
+        pid: 1,
+        name: 'terminal',
+        rows: parseInt(rows),
+        cols: parseInt(cols),
+        convertEol: true,
+        scrollback: 500,
+        disableStdin: false,
+        cursorStyle: 'underline',
+        cursorBlink: true,
+        tabStopWidth: 8,
+        screenKeys: true,
+        theme: {
+            foreground: '#58a6ff',
+            background: '#1e1e2e',
+            cursor: "#f9e2af",
+            lineHeight: 16
         }
     });
-    term.onData(function (e) {
-        client.sendClientData(e);
-    });
-}
 
-var params = {
-    operate: 'connect',
-    host: '',
-    port: '22',
-    username: '',
-    password: ''
-}
+    term.write('Hello from \\x1B[1;3;31mxterm.js\\x1B[0m $ ')
+    term.prompt = function () { term.write("\\r\\n$ "); };
 
-var loginParams = {};
+    var client = new WebSocketClient();
 
-function login() {
+    function connect(params, divId) {
+        term.open(document.getElementById(divId), true);
+        term.write('\\r\\nConnecting...');
+        client.connect({
+            onError: function (error) {
+                term.write('Error: ' + error + '\\r\\n');
+            },
+            onConnect: function () {
+                client.send(params);
+                $("body").addClass("menu-active");
+                $("#login").addClass("d-none").removeClass("d-flex");
+                $("#menu").removeClass("d-none");
+                $("#connHost").text(params.host);
+            },
+            onClose: function () {
+                term.write("\\r\\nConnection closed\\r\\n");
+                $("#login").removeClass("d-none").addClass("d-flex");
+                $("body").removeClass("menu-active");
+                $("#menu").addClass("d-none");
+            },
+            onData: function (data) {
+                term.write(data);
+            }
+        });
+        term.onData(function (e) {
+            client.sendClientData(e);
+        });
+    }
+
     var params = {
         operate: 'connect',
-        host: $("#host").val(),
-        port: $("#port").val(),
-        username: $("#username").val(),
-        password: encrypt($("#password").val())
+        host: '',
+        port: '22',
+        username: '',
+        password: ''
     }
-    loginParams = params;
-    document.title += " " + params.host;
-    connect(params, 'terminal')
-}
 
-function loginSftp() {
-    if (!loginParams || !loginParams.host) {
-        alert('请先登录服务器！');
-        return;
-    }
-    var paramsStr = JSON.stringify(loginParams);
-    var url = window.location.origin + '/sftp?params=' + encodeURIComponent(paramsStr);
-    window.open(url, "_blank");
-}
+    var loginParams = {};
 
-var selection;
-term.onSelectionChange(function () {
-    if (term.hasSelection()) {
-        selection = term.getSelection();
+    function login() {
+        var params = {
+            operate: 'connect',
+            host: $("#host").val(),
+            port: $("#port").val(),
+            username: $("#username").val(),
+            password: encrypt($("#password").val())
+        }
+        loginParams = params;
+        document.title += " " + params.host;
+        connect(params, 'terminal')
     }
-});
-term.attachCustomKeyEventHandler(function (ev) {
-    if (ev.keyCode === 86 && ev.ctrlKey) {
-        client.sendClientData("\\x00" + selection);
-        selection = "";
-    }
-});
 
-function resizeScreen(size) {
-    console.log("size", size);
-    term.scrollToBottom();
-    try {
-        term.onResize(function (size) {
-            client.send({Op: "resize", Cols: cols, Rows: rows});
-        });
-    } catch (e) {
-        console.log("e", e.message);
+    function loginSftp() {
+        if (!loginParams || !loginParams.host) {
+            alert('请先登录服务器！');
+            return;
+        }
+        var paramsStr = JSON.stringify(loginParams);
+        var url = window.location.origin + '/sftp?params=' + encodeURIComponent(paramsStr);
+        window.open(url, "_blank");
     }
-}
 
-window.addEventListener("resize", resizeScreen);
+    var selection;
+    term.onSelectionChange(function () {
+        if (term.hasSelection()) {
+            selection = term.getSelection();
+        }
+    });
+    term.attachCustomKeyEventHandler(function (ev) {
+        if (ev.keyCode === 86 && ev.ctrlKey) {
+            client.sendClientData("\\x00" + selection);
+            selection = "";
+        }
+    });
+
+    function resizeScreen(size) {
+        console.log("size", size);
+        term.scrollToBottom();
+        try {
+            term.onResize(function (size) {
+                client.send({Op: "resize", Cols: cols, Rows: rows});
+            });
+        } catch (e) {
+            console.log("e", e.message);
+        }
+    }
+
+    window.addEventListener("resize", resizeScreen);
 </script>
 </body>
 </html>
