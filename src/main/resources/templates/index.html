@@ -143,7 +143,7 @@
 
     document.getElementById('confirmDisconnectBtn').addEventListener('click', function () {
         disconnectModal.hide();
-        term.clear();
+        term.write('\x1B[2J\x1B[H\x1B[3J');
         client.disconnect();
         bc.postMessage({ type: 'session-closed' });
         $("#login").removeClass("d-none").addClass("d-flex");

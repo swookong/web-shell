@@ -24,29 +24,27 @@ function redirectToLogin() {
     container.className = 'position-fixed top-50 start-50 translate-middle';
     container.style.zIndex = '9999';
     container.innerHTML =
-        '<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2500" style="min-width:320px;">' +
+        '<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="1500" style="min-width:320px;">' +
         '<div class="toast-header bg-warning text-dark">' +
         '<i class="bi bi-exclamation-triangle-fill me-2"></i>' +
         '<strong class="me-auto">会话已过期</strong>' +
         '</div>' +
-        '<div class="toast-body bg-warning-subtle text-dark py-3">登录已过期，正在跳转至登录页...</div>' +
+        '<div class="toast-body bg-warning-subtle text-dark py-3">登录已过期，正在跳转...</div>' +
         '</div>';
     document.body.appendChild(container);
 
     var toastEl = container.querySelector('.toast');
-    var toast = new bootstrap.Toast(toastEl, { delay: 2500, autohide: true });
+    var toast = new bootstrap.Toast(toastEl, { delay: 1500, autohide: true });
     toast.show();
 
-    setTimeout(function () {
-        window.opener = null;
-        window.open('', '_self');
-        window.close();
-        if (window.top !== window.self) {
-            window.top.location.href = '/';
-        } else {
-            window.location.href = '/';
-        }
-    }, 2500);
+    window.opener = null;
+    window.open('', '_self');
+    window.close();
+    if (window.top !== window.self) {
+        window.top.location.href = '/';
+    } else {
+        window.location.href = '/';
+    }
 }
 
 function checkErr(data) {
