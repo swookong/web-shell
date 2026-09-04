@@ -143,6 +143,7 @@
 
     document.getElementById('confirmDisconnectBtn').addEventListener('click', function () {
         disconnectModal.hide();
+        term.clear();
         client.disconnect();
         bc.postMessage({ type: 'session-closed' });
         $("#login").removeClass("d-none").addClass("d-flex");
@@ -176,42 +177,65 @@
         cursorBlink: true,
         tabStopWidth: 8,
         screenKeys: true,
+        fontSize: 18,
+        fontWeight: 'bold',
         theme: {
-            foreground: '#58a6ff',
+            foreground: '#50fa7b',
             background: '#1e1e2e',
             cursor: "#f9e2af",
             lineHeight: 16
         }
     });
 
+    term.open(document.getElementById('terminal'));
     term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
     term.prompt = function () { term.write("\r\n$ "); };
 
     var client = new WebSocketClient();
+    var sessionGen = 0;
 
     function connect(params, divId) {
-        term.open(document.getElementById(divId), true);
-        term.clear();
+        sessionGen++;
+        var myGen = sessionGen;
+        term.write('\x1B[2J\x1B[H\x1B[3J');
+        term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ');
         term.write('\r\nConnecting...');
         client.connect({
             onError: function (error) {
+                if (myGen !== sessionGen) return;
                 term.write('Error: ' + error + '\r\n');
             },
             onConnect: function () {
+                if (myGen !== sessionGen) return;
                 client.send(params);
                 $("body").addClass("menu-active");
                 $("#login").addClass("d-none").removeClass("d-flex");
                 $("#menu").removeClass("d-none");
                 $("#connHost").text(params.host);
+                setTimeout(function () {
+                    var container = document.querySelector(".indexContainer");
+                    var xterm = document.querySelector(".xterm");
+                    if (xterm && xterm.clientWidth > 0) {
+                        var cellWidth = term.element.clientWidth / term.cols;
+                        var cellHeight = term.element.clientHeight / term.rows;
+                        var newCols = Math.floor(container.clientWidth / cellWidth);
+                        var newRows = Math.floor(container.clientHeight / cellHeight);
+                        if (newCols !== term.cols || newRows !== term.rows) {
+                            term.resize(newCols, newRows);
+                        }
+                    }
+                }, 50);
             },
             onClose: function () {
-                term.write("\r\nConnection closed\r\n");
+                term.write('\x1B[2J\x1B[H\x1B[3J');
                 $("#login").removeClass("d-none").addClass("d-flex");
                 $("body").removeClass("menu-active");
                 $("#menu").addClass("d-none");
             },
             onData: function (data) {
+                if (myGen !== sessionGen) return;
                 term.write(data);
+                term.scrollToBottom();
             }
         });
     }

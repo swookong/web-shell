@@ -14,14 +14,13 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
@@ -143,7 +142,7 @@ public class WebShellService {
 
     public void sendMessage(WebSocketSession session, byte[] buffer) {
         try {
-            session.sendMessage(new TextMessage(new String(buffer, StandardCharsets.ISO_8859_1)));
+            session.sendMessage(new BinaryMessage(buffer));
         } catch (IOException e) {
             log.error("数据写回前端异常：", e);
         }

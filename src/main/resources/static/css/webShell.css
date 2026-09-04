@@ -24,6 +24,12 @@ body.menu-active {
     background-color: #1e1e2e;
 }
 
+.indexContainer .xterm,
+.indexContainer .xterm-viewport,
+.indexContainer .xterm-screen {
+    width: 100% !important;
+}
+
 /* ============ 顶部菜单栏 ============ */
 .top-menu-bar {
     width: 100%;

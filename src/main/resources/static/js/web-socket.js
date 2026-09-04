@@ -26,6 +26,7 @@ WebSocketClient.prototype.connect = function (params) {
     }
 
     var ws = new WebSocket(this.getWebSocketUrl());
+    ws.binaryType = 'arraybuffer';
     this._connection = ws;
 
     ws.onopen = function () {
@@ -36,7 +37,13 @@ WebSocketClient.prototype.connect = function (params) {
 
     ws.onmessage = function (evt) {
         if (gen === self._gen) {
-            params.onData(evt.data.toString());
+            var data;
+            if (evt.data instanceof ArrayBuffer) {
+                data = new TextDecoder('utf-8').decode(new Uint8Array(evt.data));
+            } else {
+                data = evt.data;
+            }
+            params.onData(data);
         }
     };
 
